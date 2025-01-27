@@ -8,6 +8,8 @@ function GamepadStayMounted.LoadSettings()
         displayName = GamepadStayMounted.menuName,
         author = GamepadStayMounted.author,
         version = GamepadStayMounted.appVersion,
+        website = "https://www.esoui.com/downloads/info3951-GamepadStayMounted.html",
+        feedback = "https://www.esoui.com/forums/private.php?do=newpm&u=35341",
         registerForRefresh = true,
         registerForDefaults = true,
     }
