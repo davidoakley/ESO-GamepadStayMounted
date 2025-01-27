@@ -5,7 +5,7 @@
 
 GamepadStayMounted = {
     name     = "GamepadStayMounted",        -- Matches folder and Manifest file names.
-    version  = "0.1.0",                -- A nuisance to match to the Manifest.
+    appVersion = "0",                -- A nuisance to match to the Manifest.
     author   = "SirNightstorm",
     color    = "DDFFEE",           -- Used in menu titles and so on.
     menuName = "Gamepad Stay Mounted",        -- A UNIQUE identifier for menu object.

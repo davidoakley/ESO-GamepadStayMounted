@@ -1,6 +1,6 @@
 ## APIVersion: 101043
 ## Title: Gamepad Stay Mounted
-## Version: 0.1.0
+## Version: 0
 ## AddOnVersion: 10
 ## Author: SirNightstorm
 ## Description: Prevents interactions while mounted when in gamepad mode.
