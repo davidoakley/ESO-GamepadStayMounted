@@ -12,10 +12,12 @@ GamepadStayMounted = {
 }
 
 -- Default settings.
--- GamepadStayMounted.savedVars = {
+GamepadStayMounted.saved = {
+    allowUse = true,
+    allowOpen = true
 --     firstLoad = true,                   -- First time the addon is loaded ever.
 --     accountWide = false,                -- Load settings from account savedVars, instead of character.
--- }
+}
 
 -- Wraps text with a color.
 -- function GamepadStayMounted.Colorize(text, color)
@@ -27,11 +29,33 @@ GamepadStayMounted = {
 --     return text
 -- end
 
+local useString = GetString(SI_GAMECAMERAACTIONTYPE5) -- Use
+local openString = GetString(SI_GAMECAMERAACTIONTYPE13) -- Open
+
+local function isAllowedInteraction()
+    local action, interactableName, interactionBlocked, isOwned, additionalInteractInfo, context, contextLink, isCriminalInteract = GetGameCameraInteractableActionInfo()
+
+	-- local playersZoneIndex = GetUnitZoneIndex("player")
+	-- local zoneId = GetZoneId(playersZoneIndex or 0)
+
+    -- d("Zone Id " .. (zoneId or -1))
+
+    -- if zoneId == 181 then -- Cyrodiil
+        -- _G["GSM"] = { GetGameCameraInteractableActionInfo(), useString }
+
+        if (action == useString and GamepadStayMounted.saved.allowUse) or
+           (action == openString and GamepadStayMounted.saved.allowUse) then
+            return true
+        end
+    -- end
+
+    return false
+end
 
 local function overrideInteractFunction()
     local oldGIPV = RETICLE.GetInteractPromptVisible
     RETICLE.GetInteractPromptVisible = function(self)
-        if IsMounted() then
+        if IsMounted() and not isAllowedInteraction() then
             -- RETICLE.additionalInfo:SetHidden(false)
             -- RETICLE.additionalInfo:SetText("")
             -- RETICLE.interactKeybindButton:SetNormalTextColor(ZO_ERROR_COLOR)
@@ -50,7 +74,7 @@ local function overrideInteractFunction()
         -- stealInfoControl:SetHidden(IsInteractionAllowed() or settings.hideInfo)
         -- SetInfoText()
         local ret = updateInteractText(self, ...)
-        if IsMounted() and IsInGamepadPreferredMode() then
+        if IsMounted() and IsInGamepadPreferredMode() and not isAllowedInteraction() then
             RETICLE.interactKeybindButton:SetEnabled(false) -- SetNormalTextColor(ZO_ERROR_COLOR)
             RETICLE.additionalInfo:SetHidden(false)
             RETICLE.additionalInfo:SetText("Unmount to interact")
@@ -92,7 +116,7 @@ function GamepadStayMounted.OnAddOnLoaded(event, addonName)
 
     -- Load saved variables.
     -- GamepadStayMounted.characterSavedVars = ZO_SavedVars:New("GamepadStayMountedSavedVariables", 1, nil, GamepadStayMounted.savedVars)
-    -- GamepadStayMounted.accountSavedVars = ZO_SavedVars:NewAccountWide("GamepadStayMountedSavedVariables", 1, nil, GamepadStayMounted.savedVars)
+    GamepadStayMounted.saved = ZO_SavedVars:NewAccountWide("GamepadStayMountedSavedVariables", 1, nil, GamepadStayMounted.saved)
 
     -- if not GamepadStayMounted.characterSavedVars.accountWide then
     --     GamepadStayMounted.savedVars = GamepadStayMounted.characterSavedVars
@@ -101,7 +125,7 @@ function GamepadStayMounted.OnAddOnLoaded(event, addonName)
     -- end
 
     -- Settings menu in Settings.lua.
-    -- GamepadStayMounted.LoadSettings()
+    GamepadStayMounted.LoadSettings()
 
     overrideInteractFunction()
 
